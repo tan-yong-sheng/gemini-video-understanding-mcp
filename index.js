@@ -19,7 +19,8 @@ const server = new McpServer({
 }, {
   capabilities: {
     tools: {},
-    logging: {}
+    logging: {},
+    progress: {}
   }
 });
 
@@ -33,11 +34,24 @@ server.tool(
     model: z.string().optional().default("gemini-2.5-flash").describe("The Gemini model to use (default: gemini-2.5-flash)"),
     mime_type: z.string().optional().default("video/mp4").describe("The MIME type of the video (default: video/mp4)")
   },
-  async ({ video_url, prompt, model, mime_type }) => {
+  async ({ video_url, prompt, model, mime_type }, { progressToken }) => {
     try {
       // Validate environment
       if (!process.env.GOOGLE_AI_STUDIO_API_KEY) {
         throw new Error("GOOGLE_AI_STUDIO_API_KEY environment variable is required");
+      }
+
+      // Send initial progress
+      if (progressToken) {
+        await server.notification({
+          method: "notifications/progress",
+          params: {
+            progressToken,
+            progress: 0,
+            total: 100,
+            message: "Starting video analysis..."
+          }
+        });
       }
 
       // Construct API endpoint
@@ -59,7 +73,20 @@ server.tool(
         }]
       };
 
-      // Make HTTP request
+      // Progress update: sending request
+      if (progressToken) {
+        await server.notification({
+          method: "notifications/progress",
+          params: {
+            progressToken,
+            progress: 25,
+            total: 100,
+            message: "Sending request to Gemini API..."
+          }
+        });
+      }
+
+      // Make HTTP request with longer timeout
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
@@ -68,6 +95,19 @@ server.tool(
         },
         body: JSON.stringify(requestBody)
       });
+
+      // Progress update: processing response
+      if (progressToken) {
+        await server.notification({
+          method: "notifications/progress",
+          params: {
+            progressToken,
+            progress: 75,
+            total: 100,
+            message: "Processing Gemini response..."
+          }
+        });
+      }
 
       if (!response.ok) {
         const errorData = await response.text();
@@ -81,6 +121,19 @@ server.tool(
         const candidate = data.candidates[0];
         if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
           const content = candidate.content.parts[0].text;
+          
+          // Final progress update
+          if (progressToken) {
+            await server.notification({
+              method: "notifications/progress",
+              params: {
+                progressToken,
+                progress: 100,
+                total: 100,
+                message: "Video analysis complete!"
+              }
+            });
+          }
           
           return {
             content: [
@@ -96,6 +149,19 @@ server.tool(
       throw new Error('No valid response content from Google AI API');
 
     } catch (error) {
+      // Error progress update
+      if (progressToken) {
+        await server.notification({
+          method: "notifications/progress",
+          params: {
+            progressToken,
+            progress: 100,
+            total: 100,
+            message: `Error: ${error.message}`
+          }
+        });
+      }
+      
       return {
         content: [
           {
