@@ -103,16 +103,6 @@ Analyzes video content from a public URL using Google's Gemini model.
 }
 ```
 
-## Supported Video Formats
-
-The server supports various video formats for URL analysis including:
-- MP4 (.mp4)
-- MOV (.mov)
-- AVI (.avi)
-- MKV (.mkv)
-- WebM (.webm)
-- And other formats supported by Google AI Studio
-
 ## Environment Variables
 
 | Variable | Description | Required |
