@@ -12,74 +12,80 @@ A Model Context Protocol (MCP) server that provides video understanding capabili
 
 ## Installation
 
-### Using npx (Recommended)
+### 1. Using with Claude Desktop 
 
-You can run the server directly without installation:
+Add the server config to your Claude Desktop configuration file:
+
+Add the following configuration to the `mcpServers` object in your Claude configuration file:
+
+#### For Local Installation (on Windows)
+
+```json
+"gemini-video-understanding-mcp": {
+  "command": "cmd",
+  "args": [
+    "/k",
+    "npx",
+    "-y",
+    "gemini-video-understanding-mcp"
+  ],
+  "env": {
+    "GOOGLE_AI_STUDIO_API_KEY": "<YOUR_GOOGLE_AI_STUDIO_API_KEY>"
+  }
+}
+```
+
+#### For Local installation (on Linux/MacOS)
+
+```json
+"gemini-video-understanding-mcp": {
+  "command": "npx",
+  "args": [
+    "-y",
+    "gemini-video-understanding-mcp"
+  ],
+  "env": {
+    "GOOGLE_AI_STUDIO_API_KEY": "<YOUR_GOOGLE_AI_STUDIO_API_KEY>"
+  }
+}
+```
+
+#### For Development (on Windows / Linux / MacOS)
+
+```bash
+cd /path/to/gemini-video-understanding-mcp
+npm run build
+```
+
+```json
+"gemini-video-understanding-mcp": {
+  "command": "node",
+  "args": [
+    "/path/to/gemini-video-understanding-mcp/index.js"
+  ],
+  "env": {
+    "MISTRAL_API_KEY": "GOOGLE_AI_STUDIO_API_KEY"
+  }
+}
+```
+
+Location of the configuration file:
+- Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+- MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+### 2. Alternative Installation Methods
+
+You can also run this server directly using `npx`:
 
 ```bash
 npx gemini-video-understanding-mcp
 ```
 
-### Local Installation
+Or set your API key as an environment variable:
 
 ```bash
-git clone https://github.com/your-username/gemini-video-understanding-mcp.git
-cd gemini-video-understanding-mcp
-npm install
-```
-
-## Setup
-
-### 1. Get Google AI Studio API Key
-
-1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Create a new API key
-3. Copy the API key for the next step
-
-### 2. Set Environment Variables
-
-Create a `.env` file or set the environment variable:
-
-```bash
-export GOOGLE_AI_STUDIO_API_KEY="your_api_key_here"
-```
-
-For Windows:
-```cmd
-set GOOGLE_AI_STUDIO_API_KEY=your_api_key_here
-```
-
-## Usage
-
-### With Claude Desktop
-
-Add the following to your Claude Desktop configuration file:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "gemini-video-understanding": {
-      "command": "npx",
-      "args": ["gemini-video-understanding-mcp"],
-      "env": {
-        "GOOGLE_AI_STUDIO_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
-### Direct Usage
-
-```bash
-# Set your API key
-export GOOGLE_AI_STUDIO_API_KEY="your_api_key_here"
-
-# Run the server
-npm start
+export GOOGLE_AI_STUDIO_API_KEY="YOUR_GOOGLE_AI_STUDIO_API_KEY"
+npx gemini-video-understanding-mcp
 ```
 
 ## Available Tools
