@@ -3,7 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { GoogleAIClient } from "./lib/google-ai-client.js";
+import { fetch } from "undici";
 
 /**
  * Gemini Video Understanding MCP Server
@@ -11,9 +11,6 @@ import { GoogleAIClient } from "./lib/google-ai-client.js";
  * This server provides video understanding capabilities for public video URLs
  * (like YouTube) using Google's Gemini models through Google AI Studio.
  */
-
-// Initialize the Google AI client
-const googleAI = new GoogleAIClient();
 
 // Create MCP server instance
 const server = new McpServer({
@@ -43,22 +40,61 @@ server.tool(
         throw new Error("GOOGLE_AI_STUDIO_API_KEY environment variable is required");
       }
 
-      // Process the video URL
-      const result = await googleAI.processVideoUrl({
-        videoUrl: video_url,
-        prompt: prompt,
-        model: model,
-        mimeType: mime_type
+      // Construct API endpoint
+      const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+      // Prepare request body
+      const requestBody = {
+        contents: [{
+          role: "user",
+          parts: [
+            { text: prompt },
+            {
+              file_data: {
+                file_uri: video_url,
+                mime_type: mime_type
+              }
+            }
+          ]
+        }]
+      };
+
+      // Make HTTP request
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'x-goog-api-key': process.env.GOOGLE_AI_STUDIO_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
       });
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `**Video Analysis Result:**\n\n${result.content}\n\n**Model Used:** ${model}\n**Video URL:** ${video_url}`
-          }
-        ]
-      };
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Google AI API error (${response.status}): ${errorData}`);
+      }
+
+      const data = await response.json();
+      
+      // Extract content from response
+      if (data.candidates && data.candidates.length > 0) {
+        const candidate = data.candidates[0];
+        if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+          const content = candidate.content.parts[0].text;
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: `**Video Analysis Result:**\n\n${content}\n\n**Model Used:** ${model}\n**Video URL:** ${video_url}`
+              }
+            ]
+          };
+        }
+      }
+
+      throw new Error('No valid response content from Google AI API');
+
     } catch (error) {
       return {
         content: [
