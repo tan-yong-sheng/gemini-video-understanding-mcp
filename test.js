@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Test script to validate the MCP server implementation
  * This script checks if the server can start and respond to basic MCP requests
