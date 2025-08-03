@@ -5,10 +5,6 @@ A Model Context Protocol (MCP) server that provides video understanding capabili
 ## Features
 
 - **Video URL Analysis**: Analyze videos from public URLs (YouTube, etc.) directly
-- **Google AI Studio Integration**: Uses the Generative Language API for video understanding
-- **MCP Protocol Compliance**: Full compatibility with MCP clients like Claude Desktop
-- **Error Handling**: Comprehensive error handling and validation
-- **npx Support**: Can be run directly with npx
 
 ## Installation
 
