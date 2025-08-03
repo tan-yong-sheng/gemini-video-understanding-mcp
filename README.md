@@ -6,6 +6,12 @@ A Model Context Protocol (MCP) server that provides video understanding capabili
 
 - **Video URL Analysis**: Analyze videos from public URLs (YouTube, etc.) directly
 
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GOOGLE_AI_STUDIO_API_KEY` | Your Google AI Studio API key | Yes |
+
 ## Installation
 
 ### 1. Using with Claude Desktop 
@@ -105,12 +111,6 @@ Analyzes video content from a public URL using Google's Gemini model.
 }
 ```
 
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GOOGLE_AI_STUDIO_API_KEY` | Your Google AI Studio API key | Yes |
-
 ## Error Handling
 
 The server provides detailed error messages for common issues:
@@ -121,37 +121,6 @@ The server provides detailed error messages for common issues:
 - Network connectivity issues
 - Unsupported file formats
 
-## Examples
-
-### YouTube Video Analysis
-
-```bash
-# In Claude Desktop or another MCP client:
-# Use the process_video_url tool with:
-{
-  "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  "prompt": "What is the main theme of this video?"
-}
-```
-
-## Development
-
-### Running in Development Mode
-
-```bash
-npm run dev
-```
-
-### Testing
-
-```bash
-# Test with a sample request
-echo '{"method": "tools/list"}' | npm start
-```
-
-## API Reference
-
-This server implements the Model Context Protocol (MCP) specification. For more information about MCP, visit [https://modelcontextprotocol.io](https://modelcontextprotocol.io).
 
 ## Troubleshooting
 
