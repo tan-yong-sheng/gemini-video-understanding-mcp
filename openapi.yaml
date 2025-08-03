@@ -1,0 +1,199 @@
+openapi: 3.0.2
+info:
+  title: Gemini Video Understanding API
+  version: 1.0.0
+  description: >
+    API specification for interacting with Google's Gemini models for video understanding
+    using Google AI Studio (Generative Language API) with public video URLs.
+
+servers:
+  - url: https://generativelanguage.googleapis.com
+    description: Google Generative Language API base URL
+
+tags:
+  - name: Google AI Studio
+    description: Endpoints for the Google AI Studio (Generative Language) API, which uses API Keys for authentication.
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  # --- Google AI Studio Endpoints ---
+
+  /v1beta/models/{modelId}:generateContent:
+    post:
+      tags:
+        - Google AI Studio
+      summary: Generate content from video URL (Google AI Studio)
+      operationId: generateContentGoogleAIStudio
+      parameters:
+        - in: path
+          name: modelId
+          schema:
+            type: string
+            default: gemini-2.5-flash
+          required: true
+          description: The ID of the Gemini model to use (e.g., gemini-2.5-flash).
+      requestBody:
+        $ref: '#/components/requestBodies/GenerateContentBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/GenerateContentSuccess'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-goog-api-key
+      description: API key for authenticating with the Google AI Studio (Generative Language) API.
+
+  requestBodies:
+    GenerateContentBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenerateContentRequest'
+          example:
+            contents:
+              - role: "user"
+                parts:
+                  - text: "Please summarize this video: "
+                  - file_data:
+                      file_uri: "https://www.youtube.com/watch?v=9hE5-98ZeCg"
+                      mime_type: "video/mp4"
+            generationConfig:
+              thinkingConfig:
+                thinkingBudget: -1
+              temperature: 0.3
+              maxOutputTokens: 10000
+              stopSequences:
+                - "string"
+
+  responses:
+    GenerateContentSuccess:
+      description: Successful response with generated text content.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenerateContentResponse'
+    BadRequest:
+      description: Invalid request payload or parameters.
+    Unauthorized:
+      description: Unauthorized due to missing or invalid API key or token.
+    InternalServerError:
+      description: Internal server error.
+
+  schemas:
+    Part:
+      type: object
+      description: A part of a multi-part content message.
+      oneOf:
+        - properties:
+            text:
+              type: string
+              description: Text content of the part.
+          required: [text]
+        - properties:
+            file_data:
+              $ref: '#/components/schemas/FileData'
+          required: [file_data]
+      example:
+        - text: "Please summarize this video."
+        - file_data:
+            file_uri: "https://www.youtube.com/watch?v=9hE5-98ZeCg"
+            mime_type: "video/mp4"
+
+    FileData:
+      type: object
+      description: Data stored in a video, referenced by public URL.
+      properties:
+        file_uri:
+          type: string
+          description: The public URL of the video (e.g., YouTube URL).
+        mime_type:
+          type: string
+          description: The IANA MIME type of the video (e.g., `video/mp4`).
+      required:
+        - file_uri
+        - mime_type
+
+    Content:
+      type: object
+      description: Structured data type containing multi-part content.
+      properties:
+        role:
+          type: string
+          description: The identity of the entity that creates the message.
+          enum: [user, model]
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Part'
+      required:
+        - parts
+
+    GenerateContentRequest:
+      type: object
+      description: Request body for the generateContent endpoint.
+      properties:
+        contents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+          minItems: 1
+        generationConfig:
+          type: object
+          properties:
+            thinkingConfig:
+              type: object
+              properties:
+                thinkingBudget:
+                  type: integer
+                  description: >
+                    Controls the thinking budget. Set to 0 to turn off thinking,
+                    -1 for dynamic thinking, or a positive integer for a specific budget.
+            temperature:
+              type: number
+              format: float
+              minimum: 0.0
+              maximum: 2.0
+            maxOutputTokens:
+              type: integer
+            stopSequences:
+              type: array
+              items:
+                type: string
+      required:
+        - contents
+
+    GenerateContentResponse:
+      type: object
+      description: Response body from the generateContent endpoint.
+      properties:
+        candidates:
+          type: array
+          items:
+            type: object
+            properties:
+              content:
+                $ref: '#/components/schemas/Content'
+              finishReason:
+                type: string
+                enum: [FINISH_REASON_UNSPECIFIED, STOP, MAX_TOKENS, SAFETY, RECITATION, OTHER]
+        usageMetadata:
+          type: object
+          properties:
+            promptTokenCount:
+              type: integer
+            candidatesTokenCount:
+              type: integer
+            totalTokenCount:
+              type: integer

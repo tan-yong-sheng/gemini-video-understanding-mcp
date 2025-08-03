@@ -1,0 +1,48 @@
+{
+  "name": "gemini-video-understanding-mcp",
+  "version": "0.0.1",
+  "description": "MCP server for video understanding using Google's Gemini models with URL support",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "gemini-video-understanding-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --inspect index.js",
+    "build": "echo \"✅ No build step needed - this is a pure JavaScript MCP server\" && exit 0",
+    "test": "node test.js",
+    "validate": "node test.js",
+    "prepare": "echo \"📦 Preparing MCP server for publication\"",
+    "prestart": "echo \"🚀 Starting Gemini Video Understanding MCP Server...\"",
+    "lint": "echo \"📝 Linting not configured - pure JavaScript project\"",
+    "clean": "echo \"🧹 Nothing to clean - no build artifacts\""
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gemini",
+    "video-understanding",
+    "google-ai",
+    "ai",
+    "video-analysis"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "undici": "^6.0.0",
+    "zod": "^3.23.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tan-yong-sheng/gemini-video-understanding-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tan-yong-sheng/gemini-video-understanding-mcp/issues"
+  },
+  "homepage": "https://github.com/tan-yong-sheng/gemini-video-understanding-mcp#readme"
+}
