@@ -1,6 +1,6 @@
 {
   "name": "gemini-video-understanding-mcp",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "MCP server for video understanding using Google's Gemini models with URL support",
   "type": "module",
   "main": "dist/index.js",
