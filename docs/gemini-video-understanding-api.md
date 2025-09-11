@@ -17,13 +17,13 @@ Before using this function, you need to set up your environment for Google AI St
 Set up your environment variables for Google AI Studio:
 
 ```bash
-export API_PLATFORM="GOOGLE_AI_STUDIO"
-export GOOGLE_AI_STUDIO_API_KEY="YOUR_GOOGLE_AI_STUDIO_API_KEY" # Get this from aistudio.google.com/app/apikey
-# Define common model variable (defaults to gemini-2.5-flash)
+export GEMINI_API_KEY="YOUR_GEMINI_API_KEY" # Get this from aistudio.google.com/app/apikey
+# Optional: Configure base URL and model via environment
+export GEMINI_BASE_URL="${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com}"
 export GEMINI_MODEL="${GEMINI_MODEL:-gemini-2.5-flash}"
 # API URL and Auth Header setup
-API_ENDPOINT_URL="https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent"
-AUTH_HEADER="-H \"x-goog-api-key: ${GOOGLE_AI_STUDIO_API_KEY}\""
+API_ENDPOINT_URL="${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent"
+AUTH_HEADER="-H \"x-goog-api-key: ${GEMINI_API_KEY}\""
 echo "Configured for Google AI Studio."
 ```
 

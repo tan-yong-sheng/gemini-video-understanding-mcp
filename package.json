@@ -1,22 +1,22 @@
 {
   "name": "gemini-video-understanding-mcp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "MCP server for video understanding using Google's Gemini models with URL support",
-  "main": "index.js",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
-    "gemini-video-understanding-mcp": "./index.js"
+    "gemini-video-understanding-mcp": "./dist/index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --inspect index.js",
-    "build": "echo \"✅ No build step needed - this is a pure JavaScript MCP server\" && exit 0",
-    "test": "node test.js",
-    "validate": "node test.js",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "start": "node dist/index.js",
+    "dev": "tsc -w -p tsconfig.json",
+    "test": "echo \"No tests configured\"",
+    "validate": "npm run build",
     "prepare": "echo \"📦 Preparing MCP server for publication\"",
-    "prestart": "echo \"🚀 Starting Gemini Video Understanding MCP Server...\"",
-    "lint": "echo \"📝 Linting not configured - pure JavaScript project\"",
-    "clean": "echo \"🧹 Nothing to clean - no build artifacts\""
+    "prestart": "echo \"🚀 Starting Gemini Video Understanding MCP Server...\""
   },
   "keywords": [
     "mcp",
@@ -33,6 +33,10 @@
     "@modelcontextprotocol/sdk": "^1.0.0",
     "undici": "^6.0.0",
     "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=18.0.0"

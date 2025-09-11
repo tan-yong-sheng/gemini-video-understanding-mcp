@@ -10,7 +10,7 @@ A Model Context Protocol (MCP) server that provides video understanding capabili
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `GOOGLE_AI_STUDIO_API_KEY` | Your Google AI Studio API key | Yes |
+| `GEMINI_API_KEY` | Your Google AI Studio API key | Yes |
 
 ## Installation
 
@@ -32,7 +32,7 @@ Add the following configuration to the `mcpServers` object in your Claude config
     "gemini-video-understanding-mcp"
   ],
   "env": {
-    "GOOGLE_AI_STUDIO_API_KEY": "<YOUR_GOOGLE_AI_STUDIO_API_KEY>"
+    "GEMINI_API_KEY": "<YOUR_GEMINI_API_KEY>"
   }
 }
 ```
@@ -47,7 +47,7 @@ Add the following configuration to the `mcpServers` object in your Claude config
     "gemini-video-understanding-mcp"
   ],
   "env": {
-    "GOOGLE_AI_STUDIO_API_KEY": "<YOUR_GOOGLE_AI_STUDIO_API_KEY>"
+    "GEMINI_API_KEY": "<YOUR_GEMINI_API_KEY>"
   }
 }
 ```
@@ -63,10 +63,10 @@ npm run build
 "gemini-video-understanding-mcp": {
   "command": "node",
   "args": [
-    "/path/to/gemini-video-understanding-mcp/index.js"
+    "/path/to/gemini-video-understanding-mcp/dist/index.js"
   ],
   "env": {
-    "MISTRAL_API_KEY": "GOOGLE_AI_STUDIO_API_KEY"
+    "GEMINI_API_KEY": "<YOUR_GEMINI_API_KEY>"
   }
 }
 ```
@@ -86,7 +86,7 @@ npx gemini-video-understanding-mcp
 Or set your API key as an environment variable:
 
 ```bash
-export GOOGLE_AI_STUDIO_API_KEY="YOUR_GOOGLE_AI_STUDIO_API_KEY"
+export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 npx gemini-video-understanding-mcp
 ```
 
@@ -99,15 +99,17 @@ Analyzes video content from a public URL using Google's Gemini model.
 **Parameters:**
 - `video_url` (string, required): The public URL of the video (e.g., YouTube link)
 - `prompt` (string, required): The instruction for the Gemini model
-- `model` (string, optional): The Gemini model to use (default: "gemini-2.5-flash")
 - `mime_type` (string, optional): The MIME type of the video (default: "video/mp4")
+
+Model selection is configured via environment only:
+- `GEMINI_MODEL` (optional, default: `gemini-2.5-flash`)
+- `GEMINI_BASE_URL` (optional, default: `https://generativelanguage.googleapis.com`)
 
 **Example:**
 ```json
 {
   "video_url": "https://www.youtube.com/watch?v=9hE5-98ZeCg",
-  "prompt": "Please summarize this video in 3 sentences.",
-  "model": "gemini-2.5-flash"
+  "prompt": "Please summarize this video in 3 sentences."
 }
 ```
 
@@ -126,7 +128,7 @@ The server provides detailed error messages for common issues:
 
 ### Common Issues
 
-1. **"GOOGLE_AI_STUDIO_API_KEY environment variable is required"**
+1. **"GEMINI_API_KEY environment variable is required"**
    - Make sure you've set the API key environment variable
    - Verify the API key is valid
 

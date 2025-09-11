@@ -70,8 +70,6 @@ components:
                       file_uri: "https://www.youtube.com/watch?v=9hE5-98ZeCg"
                       mime_type: "video/mp4"
             generationConfig:
-              thinkingConfig:
-                thinkingBudget: -1
               temperature: 0.3
               maxOutputTokens: 10000
               stopSequences:
@@ -152,14 +150,6 @@ components:
         generationConfig:
           type: object
           properties:
-            thinkingConfig:
-              type: object
-              properties:
-                thinkingBudget:
-                  type: integer
-                  description: >
-                    Controls the thinking budget. Set to 0 to turn off thinking,
-                    -1 for dynamic thinking, or a positive integer for a specific budget.
             temperature:
               type: number
               format: float
