@@ -18,12 +18,13 @@ Set up your environment variables for Google AI Studio:
 
 ```bash
 export GEMINI_API_KEY="YOUR_GEMINI_API_KEY" # Get this from aistudio.google.com/app/apikey
-# Optional: Configure base URL and model via environment
+# Optional: Configure base URL, model, and max tokens via environment
 export GEMINI_BASE_URL="${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com}"
 export GEMINI_MODEL="${GEMINI_MODEL:-gemini-2.5-flash}"
 # API URL and Auth Header setup
 API_ENDPOINT_URL="${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent"
 AUTH_HEADER="-H \"x-goog-api-key: ${GEMINI_API_KEY}\""
+export GEMINI_MAX_OUTPUT_TOKENS="${GEMINI_MAX_OUTPUT_TOKENS:-8192}"
 echo "Configured for Google AI Studio."
 ```
 

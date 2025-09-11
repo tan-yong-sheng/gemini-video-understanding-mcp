@@ -98,6 +98,8 @@ npx gemini-video-understanding-mcp
 
 Analyzes video content from a public URL using Google's Gemini model.
 
+Uses standard generateContent; keep prompts concise (≤15 words).
+
 **Parameters:**
 - `video_url` (string, required): The public URL of the video (e.g., YouTube link)
 - `prompt` (string, required): The instruction for the Gemini model
@@ -105,6 +107,7 @@ Analyzes video content from a public URL using Google's Gemini model.
 
 Model selection is configured via environment only:
 - `GEMINI_MODEL` (optional, default: `gemini-2.5-flash`)
+- `GEMINI_MAX_OUTPUT_TOKENS` (optional, default 8192)
 - `GEMINI_BASE_URL` (optional, default: `https://generativelanguage.googleapis.com`)
 
 **Example:**

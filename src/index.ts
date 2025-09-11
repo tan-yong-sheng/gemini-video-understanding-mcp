@@ -24,7 +24,7 @@ server.tool(
   "process_video_url",
   {
     video_url: z.string().url().describe("The public URL of the video to analyze (e.g., YouTube link)"),
-    prompt: z.string().describe("The instruction for the Gemini model (e.g., 'Summarize this video in 3 sentences')"),
+    prompt: z.string().describe("Instruction for the model (max 15 words; be concise)"),
     mime_type: z.string().optional().default("video/mp4").describe("The MIME type of the video (default: video/mp4)")
   },
   async ({ video_url, prompt, mime_type }) => {
@@ -37,7 +37,12 @@ server.tool(
       const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
       const apiEndpoint = `${baseUrl}/v1beta/models/${model}:generateContent`;
 
-      const requestBody = {
+      let genMax = 8192;
+      if (process.env.GEMINI_MAX_OUTPUT_TOKENS) {
+        const parsed = parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS, 10);
+        if (!Number.isNaN(parsed) && parsed > 0) genMax = parsed;
+      }
+      const baseBody: any = {
         contents: [{
           role: "user",
           parts: [
@@ -49,8 +54,10 @@ server.tool(
               }
             }
           ]
-        }]
-      } as const;
+        }],
+        generationConfig: { maxOutputTokens: genMax }
+      };
+      const requestBody = baseBody;
 
       const response = await fetch(apiEndpoint, {
         method: 'POST',
@@ -68,23 +75,29 @@ server.tool(
 
       const data: any = await response.json();
 
+      let finalText = '';
       if (data.candidates && data.candidates.length > 0) {
-        const candidate = data.candidates[0];
-        if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-          const content = candidate.content.parts[0].text as string;
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: `**Video Analysis Result:**\n\n${content}\n\n**Model Used:** ${model}\n**Video URL:** ${video_url}`
-              }
-            ]
-          };
+        const cand = data.candidates[0];
+        if (cand.content && cand.content.parts) {
+          for (const p of cand.content.parts) {
+            if (typeof p.text === 'string') finalText += p.text;
+          }
         }
       }
+      finalText = finalText.trim();
+      if (!finalText) {
+        throw new Error('No valid response content from Google AI API');
+      }
 
-      throw new Error('No valid response content from Google AI API');
+      return {
+        content: [
+          {
+            type: "text",
+            text: `**Video Analysis Result:**\n\n${finalText}\n\n**Model Used:** ${model}\n**Video URL:** ${video_url}`
+          }
+        ]
+      };
+      
 
     } catch (error: any) {
       return {

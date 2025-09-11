@@ -20,7 +20,8 @@ Environment
 - Entry: src/index.ts
   - Initializes MCP server and registers a single tool process_video_url that analyzes a public video URL via Google Generative Language API.
   - Tool schema defined inline with zod (video_url, prompt, optional mime_type). Model is read from GEMINI_MODEL env.
-  - Sends POST ${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent with contents parts of text and file_data; api key header x-goog-api-key uses GEMINI_API_KEY.
+  - Sends POST ${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent; api key header x-goog-api-key uses GEMINI_API_KEY.
+  - generationConfig.maxOutputTokens defaults to 8192 (override with GEMINI_MAX_OUTPUT_TOKENS).
   - Logs startup/warnings to stderr; exits on fatal errors.
   - Key references:
     - Tool registration and handler: src/index.ts:23-76
