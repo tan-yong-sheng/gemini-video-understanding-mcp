@@ -11,6 +11,8 @@ A Model Context Protocol (MCP) server that provides video understanding capabili
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `GEMINI_API_KEY` | Your Google AI Studio API key | Yes |
+| `GEMINI_BASE_URL` | Your Custom Gemini Base URL (default: `https://generativelanguage.googleapis.com`) | No |
+| `GEMINI_MODEL` | Your Gemini model (default: gemini-2.5-flash) | No |
 
 ## Installation
 
